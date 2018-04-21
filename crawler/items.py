@@ -7,9 +7,12 @@
 
 import scrapy
 
-
 class FormItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
     url = scrapy.Field()
     form_id = scrapy.Field()
+
+class InputItem(scrapy.Item):
+    url = scrapy.Field()
+    form_id = scrapy.Field()
+    complete = scrapy.Field()
+    type_attr = scrapy.Field()
