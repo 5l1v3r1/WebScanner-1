@@ -8,11 +8,9 @@
 import scrapy
 
 class FormItem(scrapy.Item):
-    url = scrapy.Field()
-    form_id = scrapy.Field()
+    action = scrapy.Field()
+    method = scrapy.Field()
+    inputs = scrapy.Field()
 
 class InputItem(scrapy.Item):
-    url = scrapy.Field()
-    form_id = scrapy.Field()
-    complete = scrapy.Field()
-    type_attr = scrapy.Field()
+    name = scrapy.Field()
