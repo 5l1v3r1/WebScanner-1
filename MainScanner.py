@@ -18,30 +18,38 @@ print
 
 # Scan
 print 'Scanning for vulnerabilities...'
-if not os.path.exists('vulnerabilities/'):
-    os.makedirs('vulnerabilities')
-if not os.path.exists('scripts/'):
-    os.makedirs('scripts')
+os.system('rm -rf vulnerabilities/')
+os.makedirs('vulnerabilities')
+os.system('rm -rf scripts/')
+os.makedirs('scripts')
 
+## 3. Directory Traversal
+from scanners.DirectoryTraversalScanner import DirectoryTraversalScanner as DTS
 ## 6. Command Injection
 from scanners.CommandInjectionScanner import CommandInjectionScanner as CIS
 
-ciS = CIS(targetsFile)
-ciV = ciS.scanVulnerabilities()
+scanners = {
+    'directorytraversal': DTS(targetsFile),
+    'commandinjection': CIS(targetsFile)
+}
+for className in scanners:
+    scanner = scanners[className]
+    vulnerabilities = scanner.scanVulnerabilities()
 
-print 'Scan results:'
-print ciV
-with open('vulnerabilities/commandinjection.json', 'w') as ciFile:
-    json.dump(ciV, ciFile, indent=4, separators=(',', ': '))
-    ciFile.write('\n')
-print 'Written to vulnerabilities/commandinjection.json'
+    print 'Scan results:'
+    print vulnerabilities
+    with open('vulnerabilities/%s.json' % className, 'w') as vulnerabilityFile:
+        json.dump(vulnerabilities, vulnerabilityFile,
+                indent=4, separators=(',', ': '))
+        vulnerabilityFile.write('\n')
+    print 'Written to vulnerabilities/%s.json' % className
 
-i = 0
-for domain in ciV['results']:
-    for vulnerability in ciV['results'][domain]:
-        script = ciS.generateExploit(domain, vulnerability)
-        with open('scripts/commandinjection-%02d.sh' % i, 'w') as scriptFile:
-            scriptFile.write(script)
-        os.chmod('scripts/commandinjection-%02d.sh' % i, 0755)
-        i += 1
-print 'Generated scripts/commandinjection-*.sh'
+    i = 0
+    for domain in vulnerabilities['results']:
+        for vulnerability in vulnerabilities['results'][domain]:
+            script = scanner.generateExploit(domain, vulnerability)
+            with open('scripts/%s-%02d.sh' % (className, i), 'w') as scriptFile:
+                scriptFile.write(script)
+            os.chmod('scripts/%s-%02d.sh' % (className, i), 0755)
+            i += 1
+    print 'Generated scripts/%s-*.sh' % className
