@@ -1,0 +1,1 @@
+TARGET = 'http://target.com'

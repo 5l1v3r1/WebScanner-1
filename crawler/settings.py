@@ -11,7 +11,9 @@
 
 BOT_NAME = 'crawler'
 
-TARGET = 'http://target.com'
+import sys
+sys.path.append('..')
+from config import TARGET
 
 SPIDER_MODULES = ['crawler.spiders']
 NEWSPIDER_MODULE = 'crawler.spiders'
