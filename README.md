@@ -1,10 +1,23 @@
-# CS331 - Assignment 3 - Web Scanner
+# CS5331 - Assignment 3 - Web Scanner
+## Dependencies
+* scrapy
+```sh
+sudo pip install scrapy
+```
+
+## Total scan
+`MainScanner.py` runs the crawler, then scans for various vulnerability categories, outputting vulnerabilities in `./vulnerabilities/*.json`
+
+Usage:
+```sh
+python MainScanner.py
+```
+
 ## Crawler
 The crawler crawls all `<a>` tags as well as all submitted `<form>` tags, and record all `GET` requests with query parameters and requests from `<form>` tags
 
 Usage:
 ```sh
-sudo pip install scrapy
 scrapy crawl main -o targets.json
 ```
 Sample output `targets.json`:
@@ -19,3 +32,6 @@ Sample output `targets.json`:
 ```
 
 ## Open Redirect
+
+## Command Injection
+Injecting `uname -a`
