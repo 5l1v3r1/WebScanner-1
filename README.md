@@ -6,7 +6,7 @@ sudo pip install scrapy
 ```
 
 ## Total scan
-`MainScanner.py` runs the crawler, then scans for various vulnerability categories, outputting vulnerabilities in `./vulnerabilities/*.json`
+`MainScanner.py` runs the crawler, then scans for various vulnerability categories, outputting vulnerabilities in `./vulnerabilities/*.json` and POC exploit scripts to `./scripts/`
 
 Usage:
 ```sh
