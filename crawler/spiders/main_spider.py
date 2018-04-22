@@ -4,9 +4,9 @@ from ..items import *
 
 class MainSpider(scrapy.Spider):
     name = "main"
-    allowed_domains = [
-            settings.TARGET.replace('http://', '').replace('https://', '')]
-    start_urls = [settings.TARGET]
+    start_urls = [url for url in settings.TARGETS.split('\n') if url]
+    allowed_domains = [url.replace('http://', '').replace('https://', '')
+            for url in start_urls]
 
     def parse(self, response):
         # Crawl links

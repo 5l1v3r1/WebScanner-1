@@ -13,7 +13,7 @@ BOT_NAME = 'crawler'
 
 import sys
 sys.path.append('..')
-from config import TARGET
+from config import TARGETS
 
 LOG_LEVEL = 'INFO'
 
