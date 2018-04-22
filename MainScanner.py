@@ -3,29 +3,33 @@
 import os
 import json
 
-from scanners.CommandInjectionScanner import CommandInjectionScanner as CIS
-
 targetsFile = 'targets' + '.json'
 
-# Crawl
-os.system('rm -f %s' % targetsFile)
-ret = os.system('scrapy crawl main -o %s' % targetsFile)
-if ret: exit(ret)
+# Crawl if haven't done so
+if os.path.exists(targetsFile):
+    print '%s found, crawling skipped' % targetsFile
+else:
+    ret = os.system('scrapy crawl main -o %s' % targetsFile)
+    if ret: exit(ret)
 
 print 'Targets to scan for vulnerabilities:'
 os.system('cat %s' % targetsFile)
 print
 
 # Scan
+print 'Scanning for vulnerabilities...'
 if not os.path.exists('vulnerabilities/'):
     os.makedirs('vulnerabilities')
 if not os.path.exists('scripts/'):
     os.makedirs('scripts')
-print 'Scan results:'
+
 ## 6. Command Injection
+from scanners.CommandInjectionScanner import CommandInjectionScanner as CIS
+
 ciS = CIS(targetsFile)
 ciV = ciS.scanVulnerabilities()
 
+print 'Scan results:'
 print ciV
 with open('vulnerabilities/commandinjection.json', 'w') as ciFile:
     json.dump(ciV, ciFile, indent=4, separators=(',', ': '))
