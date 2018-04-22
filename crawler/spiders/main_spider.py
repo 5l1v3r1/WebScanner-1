@@ -4,6 +4,8 @@ from ..items import *
 
 class MainSpider(scrapy.Spider):
     name = "main"
+    allowed_domains = [
+            settings.TARGET.replace('http://', '').replace('https://', '')]
     start_urls = [settings.TARGET]
 
     def parse(self, response):

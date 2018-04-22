@@ -15,6 +15,8 @@ import sys
 sys.path.append('..')
 from config import TARGET
 
+LOG_LEVEL = 'INFO'
+
 SPIDER_MODULES = ['crawler.spiders']
 NEWSPIDER_MODULE = 'crawler.spiders'
 
