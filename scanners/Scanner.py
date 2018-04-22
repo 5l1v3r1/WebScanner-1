@@ -88,7 +88,8 @@ class Scanner:
             '',
             'html = \'<form method=%s action=%s>' % (method, action) + \
                     ''.join(['<input name=%s value="%s">' % (
-                        k, unquote(params[k])) for k in params]) + \
+                        k, unquote(params[k]).replace('\\', '\\\\').replace(
+                            "'", "\\'")) for k in params]) + \
                     '</form><script>document.forms[0].submit()</script>\'',
             'webbrowser.open_new_tab("data:text/html," + quote(html))',
             'EOF',
