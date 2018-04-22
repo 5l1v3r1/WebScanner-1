@@ -1,6 +1,5 @@
 import json
-from urllib2 import urlopen
-import difflib
+from urllib2 import urlopen, unquote
 
 class CommandInjectionScanner:
     className = 'Command Injection'
@@ -73,13 +72,13 @@ class CommandInjectionScanner:
             'xdg-mime default `xdg-mime query default x-scheme-handler/http` \
                     x-scheme-handler/data',
             '',
-            'python <(cat <<EOF',
+            'python <(cat <<\\EOF',
             'from urllib import quote',
             'import webbrowser',
             '',
             'html = \'<form method=%s action=%s>' % (method, action) + \
-                    ''.join(['<input name=%s value="%s">' % (k, params[k])
-                        for k in params]) + \
+                    ''.join(['<input name=%s value="%s">' % (
+                        k, unquote(params[k])) for k in params]) + \
                     '</form><script>document.forms[0].submit()</script>\'',
             'webbrowser.open_new_tab("data:text/html," + quote(html))',
             'EOF',
