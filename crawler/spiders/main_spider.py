@@ -5,8 +5,13 @@ from ..items import *
 class MainSpider(scrapy.Spider):
     name = "main"
     start_urls = [url for url in settings.TARGETS.split('\n') if url]
-    allowed_domains = [url.replace('http://', '').replace('https://', '')
+    allowed_domains = [url.replace('http://', '').replace('https://', '').split('/')[0]
             for url in start_urls]
+
+    def __init__(self, *args, **kwargs):
+        super(MainSpider, self).__init__(*args, **kwargs)
+        self.logger.info('start_urls = %s\nallowed_domains = %s',
+                self.start_urls, self.allowed_domains)
 
     def parse(self, response):
         self.logger.debug("(parse) response: status=%d, URL=%s" % (
