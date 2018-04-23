@@ -31,6 +31,12 @@ Sample output `targets.json`:
 ]
 ```
 
+## SQL Injection
+Using `sqlmap`
+
+## Directory Traversal
+Stealing `/etc/passwd`
+
 ## Open Redirect
 
 ## Command Injection
