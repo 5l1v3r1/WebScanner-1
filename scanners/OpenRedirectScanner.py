@@ -30,9 +30,7 @@ class OpenRedirectScanner(Scanner):
 
         # For Each Target..
         for target in self.targets:
-            print
-            print '[OPEN REDIRECT] Scanning ' + target['action'] + ' ...'
-            print
+            self.logger.info('[OPEN REDIRECT] Scanning %s ...', target['action'])
 
             # Set Method
             method = target['method']
@@ -74,34 +72,27 @@ class OpenRedirectScanner(Scanner):
 
 
             # PREPARE REQUESTS TO SEND. FOR LOOP FOR EACH PAYLOAD. BREAK IF CURRENT PAYLOAD SUCCEEDS
-            print '[OPEN REDIRECT] NOTE: FIRST TWO PAYLOADS ARE GUARANTEED TO FAIL FOR TESTING PURPOSES.'
-            print
+            self.logger.info('[OPEN REDIRECT] NOTE: FIRST TWO PAYLOADS ARE GUARANTEED TO FAIL FOR TESTING PURPOSES.')
 
             noResult = True
 
             for payload in payloads:
-                print '[OPEN REDIRECT] Trying with payload: ' + payload + ' ...'
+                self.logger.info('[OPEN REDIRECT] Trying with payload: %s ...', payload)
                 KVParams = self._constructKVPair(payload, paramsArray)
                 isSuccess = self._sendPayload(target['action'], KVParams, method, "", True)
                 # Check Payload Succeeds or Not
                 if isSuccess:
-                    print '[OPEN REDIRECT] .... Success.'
-                    print
+                    self.logger.info('[OPEN REDIRECT] .... Success.')
                     # Generate Result List
                     noResult = False
                     self._generateResult(target['action'], KVParams, method)
-                    print
-                    print '[OPEN REDIRECT] Vulnerability found for ' + target['action']
-                    print
+                    self.logger.info('[OPEN REDIRECT] Vulnerability found for %s', target['action'])
                     break # Exit For Loop. Mission is Done.
                 else:
-                    print '[OPEN REDIRECT] .... Failed.'
-                    print
+                    self.logger.info('[OPEN REDIRECT] .... Failed.')
             # Failed to find any...
             if noResult:
-                print
-                print '[OPEN REDIRECT] No result for ' + target['action']
-                print
+                self.logger.info('[OPEN REDIRECT] No result for %s', target['action'])
 
         return self.results
 
@@ -165,7 +156,7 @@ class OpenRedirectScanner(Scanner):
         for item in toSendParams:
             if not getattr(item, 'value'):
                 # Empty Param Value: Insert Payload
-                # print 'Empty Param: ' + getattr(item, 'param')
+                self.logger.debug('Empty Param: ' + getattr(item, 'param'))
                 KVPair[getattr(item, 'param')] = payload
             else:
                 KVPair[getattr(item, 'param')] = getattr(item, 'value')

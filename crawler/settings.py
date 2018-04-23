@@ -13,15 +13,10 @@ BOT_NAME = 'crawler'
 
 import sys
 sys.path.append('..')
-from config import TARGETS
-
-LOG_LEVEL = 'INFO'
+from config import *
 
 SPIDER_MODULES = ['crawler.spiders']
 NEWSPIDER_MODULE = 'crawler.spiders'
-
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'CS5331 crawler (prdz team)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False

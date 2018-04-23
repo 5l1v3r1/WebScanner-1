@@ -1,5 +1,12 @@
+import logging
 import json
 from urllib2 import urlopen, unquote
+
+import sys
+sys.path.append('..')
+from config import LOG_LEVEL
+
+logging.basicConfig(stream=sys.stdout)
 
 class Scanner(object):
     className = 'Scanner'
@@ -10,6 +17,8 @@ class Scanner(object):
     realPayload = ''
 
     def __init__(self, targetsFile):
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger.setLevel(logging.getLevelName(LOG_LEVEL))
         with open(targetsFile) as json_file:
             self.targets = json.load(json_file)
 
