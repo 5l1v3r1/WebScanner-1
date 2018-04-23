@@ -1,7 +1,7 @@
 import json
 from urllib2 import urlopen, unquote
 
-class Scanner:
+class Scanner(object):
     className = 'Scanner'
     payloads = []
     testPayload = ''

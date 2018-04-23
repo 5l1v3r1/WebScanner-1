@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+from sys import stdout
 import json
 
 targetsFile = 'targets' + '.json'
@@ -13,22 +14,27 @@ else:
     if ret: exit(ret)
 
 print 'Targets to scan for vulnerabilities:'
+stdout.flush()
 os.system('cat %s' % targetsFile)
 print
 
 # Scan
 print 'Scanning for vulnerabilities...'
+stdout.flush()
 os.system('rm -rf vulnerabilities/')
 os.makedirs('vulnerabilities')
 os.system('rm -rf scripts/')
 os.makedirs('scripts')
 
+## 1. SQL Injection
+from scanners.SQLInjectionScanner import SQLInjectionScanner as SIS
 ## 3. Directory Traversal
 from scanners.DirectoryTraversalScanner import DirectoryTraversalScanner as DTS
 ## 6. Command Injection
 from scanners.CommandInjectionScanner import CommandInjectionScanner as CIS
 
 scanners = {
+    'sqlinjection': SIS(targetsFile),
     'directorytraversal': DTS(targetsFile),
     'commandinjection': CIS(targetsFile)
 }
