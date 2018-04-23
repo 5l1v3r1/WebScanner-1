@@ -4,6 +4,10 @@
 ```sh
 sudo pip install scrapy
 ```
+* python requests module
+```sh
+sudo apt-get install python-pip
+```
 
 ## Total scan
 `MainScanner.py` runs the crawler, then scans for various vulnerability categories, outputting vulnerabilities in `./vulnerabilities/*.json` and POC exploit scripts to `./scripts/`
@@ -38,6 +42,7 @@ Using `sqlmap`
 Stealing `/etc/passwd`
 
 ## Open Redirect
+Force redirection to https://status.github.com/messages
 
 ## Command Injection
 Injecting `uname -a`
