@@ -13,13 +13,13 @@ else:
     ret = os.system('scrapy crawl main -o %s' % targetsFile)
     if ret: exit(ret)
 
-print 'Targets to scan for vulnerabilities:'
+print '# Targets to scan for vulnerabilities:'
 stdout.flush()
 os.system('cat %s' % targetsFile)
 print
 
 # Scan
-print 'Scanning for vulnerabilities...'
+print '# Scanning for vulnerabilities...'
 stdout.flush()
 os.system('rm -rf vulnerabilities/')
 os.makedirs('vulnerabilities')
@@ -42,10 +42,11 @@ scanners = {
     'commandinjection': CIS(targetsFile)
 }
 for className in scanners:
+    print '## Scanning for', className, 'vulnerabilities...'
+    stdout.flush()
     scanner = scanners[className]
     vulnerabilities = scanner.scanVulnerabilities()
 
-    print 'Scan results:'
     print vulnerabilities
     with open('vulnerabilities/%s.json' % className, 'w') as vulnerabilityFile:
         json.dump(vulnerabilities, vulnerabilityFile,
