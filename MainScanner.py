@@ -26,24 +26,9 @@ os.makedirs('vulnerabilities')
 os.system('rm -rf scripts/')
 os.makedirs('scripts')
 
-## 1. SQL Injection
-from scanners.SQLInjectionScanner import SQLInjectionScanner as SIS
-## 2. Server Side Code Injection
-from scanners.ServerSideCodeInjectionScanner import ServerSideCodeInjectionScanner as SSIS
-## 3. Directory Traversal
-from scanners.DirectoryTraversalScanner import DirectoryTraversalScanner as DTS
-## 4. Open Redirect
-from scanners.OpenRedirectScanner import OpenRedirectScanner as ORS
-## 6. Command Injection
-from scanners.CommandInjectionScanner import CommandInjectionScanner as CIS
+from scanners import Scanners
+scanners = { scanner: Scanners[scanner](targetsFile) for scanner in Scanners }
 
-scanners = {
-    'sqlinjection': SIS(targetsFile),
-    'serversidecodeinjection': SSIS(targetsFile),
-    'directorytraversal': DTS(targetsFile),
-    'openredirect': ORS(targetsFile),
-    'commandinjection': CIS(targetsFile)
-}
 for className in scanners:
     scanner = scanners[className]
     print '\n## Scanning for', scanner.className, 'vulnerabilities...'
