@@ -21,11 +21,11 @@ Redirect script for CS5331 Purposes
 
 ### Command:
 ```sh 
-python redirect.py <targetURL> <paramfile> <payloadfile> (cookiefile) 
+python redirect.py <targetURL> <paramfile> (cookiefile) 
 ```
 ### Example: 
 ```sh 
-python redirect.py http://target.com/openredirect/openredirect.php param.txt payload.txt cookie.txt 
+python redirect.py http://target.com/openredirect/openredirect.php param.txt cookie.txt 
 ```
 
 ```<targetURL>```: Contains the URL you wish to target. Example: http://target.com/openredirect/openredirect.php
@@ -36,15 +36,13 @@ Gsid=234512213443
 Gredirect
 Program will always run in GET mode unless POST params are detected.
 
-```<payloadfile>```: Contains the payload needed to redirect to https://status.github.com. MUST HAVE FILE PRESENT.
-
 ```(cookiefile)``` OPTIONAL: If cookie file is present, will attempt to load the cookies into the request. The format is as such:
 Sample File:
 enwiki_session|17ab96bd8ffbe8ca58a78657a918558
 
 ### Sample:
 ```sh
-cs5331@benchmark:~/Desktop/VB/redirect$ python redirect.py http://target.com/openredirect/openredirect.php param.txt payload.txt 
+cs5331@benchmark:~/Desktop/VB/redirect$ python redirect.py http://target.com/openredirect/openredirect.php param.txt
 NOTE: FIRST TWO PAYLOADS ARE GUARANTEED TO FAIL FOR TESTING PURPOSES.
 
 Trying with payload: //3H6k7lIAiqjfNeN@example.com@status.github.com/messages/ .... Failed.

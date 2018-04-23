@@ -1,7 +1,0 @@
-//3H6k7lIAiqjfNeN@example.com@status.github.com/messages/
-//XY>.7d8T\205pZM@example.com@status.github.com/messages/
-https://status.github.com/messages/%2e%2e%2f
-https://status.github.com/messages
-https://status.github.com/messages/%2f..
-https://status.github.com/messages/%2f%2e%2e
-////status.github.com/messages/%2e%2e%2f
