@@ -42,11 +42,11 @@ scanners = {
     'commandinjection': CIS(targetsFile)
 }
 for className in scanners:
-    print '## Scanning for', className, 'vulnerabilities...'
-    stdout.flush()
     scanner = scanners[className]
-    vulnerabilities = scanner.scanVulnerabilities()
+    print '## Scanning for', scanner.className, 'vulnerabilities...'
+    stdout.flush()
 
+    vulnerabilities = scanner.scanVulnerabilities()
     print vulnerabilities
     with open('vulnerabilities/%s.json' % className, 'w') as vulnerabilityFile:
         json.dump(vulnerabilities, vulnerabilityFile,
