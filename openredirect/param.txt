@@ -1,3 +1,0 @@
-Gusername=johncena
-Gpassword=12345
-Gredirect

@@ -13,13 +13,13 @@ else:
     ret = os.system('scrapy crawl main -o %s' % targetsFile)
     if ret: exit(ret)
 
-print '# Targets to scan for vulnerabilities:'
+print 'Targets to scan for vulnerabilities:'
 stdout.flush()
 os.system('cat %s' % targetsFile)
 print
 
 # Scan
-print '# Scanning for vulnerabilities...'
+print 'Scanning for vulnerabilities...'
 stdout.flush()
 os.system('rm -rf vulnerabilities/')
 os.makedirs('vulnerabilities')
@@ -30,20 +30,22 @@ os.makedirs('scripts')
 from scanners.SQLInjectionScanner import SQLInjectionScanner as SIS
 ## 3. Directory Traversal
 from scanners.DirectoryTraversalScanner import DirectoryTraversalScanner as DTS
+## 4. Open Redirect
+from scanners.OpenRedirectScanner import OpenRedirectScanner as ORS
 ## 6. Command Injection
 from scanners.CommandInjectionScanner import CommandInjectionScanner as CIS
 
 scanners = {
     'sqlinjection': SIS(targetsFile),
     'directorytraversal': DTS(targetsFile),
+    'openredirect': ORS(targetsFile),
     'commandinjection': CIS(targetsFile)
 }
 for className in scanners:
-    print '## Scanning for', className, 'vulnerabilities...'
-    stdout.flush()
-
     scanner = scanners[className]
     vulnerabilities = scanner.scanVulnerabilities()
+
+    print 'Scan results:'
     print vulnerabilities
     with open('vulnerabilities/%s.json' % className, 'w') as vulnerabilityFile:
         json.dump(vulnerabilities, vulnerabilityFile,
