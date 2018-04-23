@@ -38,6 +38,9 @@ Sample output `targets.json`:
 ## SQL Injection
 Using `sqlmap`
 
+## Server Side Code Injection
+Getting php page's source code
+
 ## Directory Traversal
 Stealing `/etc/passwd`
 

@@ -37,6 +37,13 @@ class Scanner(object):
         except:
             return False
 
+    def loadPayload(self, payload, target):
+        if payload.find('%s') > -1:
+            return (payload % self.testPayload, payload % self.realPayload,
+                    self.testSignature)
+        else:
+            return (payload, payload, self.fixedSignature)
+
     def scanVulnerabilities(self):
         results = { 'class': self.className, 'results': {} }
         for target in self.targets:
@@ -47,13 +54,8 @@ class Scanner(object):
             for param in target['inputs']:
                 params = { key['name']: '1' for key in target['inputs'] }
                 for payload in self.payloads:
-                    if payload.find('%s') > -1:
-                        loadedTestPayload = payload % self.testPayload
-                        loadedRealPayload = payload % self.realPayload
-                        signature = self.testSignature
-                    else:
-                        loadedTestPayload = loadedRealPayload = payload
-                        signature = self.fixedSignature
+                    loadedTestPayload, loadedRealPayload, \
+                            signature = self.loadPayload(payload, target)
                     # Check form with the single parameter
                     if self._vulnerable(target, {
                             param['name']: loadedTestPayload }, signature):
@@ -64,7 +66,7 @@ class Scanner(object):
                             'method': target['method']
                         })
                         break
-                    # Check pre-dummy-filled form with the overriden parameter
+                    # Check pre-dummy-filled form with the overridden parameter
                     params[param['name']] = loadedTestPayload
                     if self._vulnerable(target, params, signature):
                         params[param['name']] = loadedRealPayload

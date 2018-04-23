@@ -28,6 +28,8 @@ os.makedirs('scripts')
 
 ## 1. SQL Injection
 from scanners.SQLInjectionScanner import SQLInjectionScanner as SIS
+## 2. Server Side Code Injection
+from scanners.ServerSideCodeInjectionScanner import ServerSideCodeInjectionScanner as SSIS
 ## 3. Directory Traversal
 from scanners.DirectoryTraversalScanner import DirectoryTraversalScanner as DTS
 ## 4. Open Redirect
@@ -37,6 +39,7 @@ from scanners.CommandInjectionScanner import CommandInjectionScanner as CIS
 
 scanners = {
     'sqlinjection': SIS(targetsFile),
+    'serversidecodeinjection': SSIS(targetsFile),
     'directorytraversal': DTS(targetsFile),
     'openredirect': ORS(targetsFile),
     'commandinjection': CIS(targetsFile)
