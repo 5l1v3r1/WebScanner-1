@@ -46,6 +46,8 @@ class SQLInjectionScanner(Scanner):
         results['class'] = self.className
         results['results'] = {}
         result_files = glob('sqlmap/output/results*')
+        domains = set()
+
         if not result_files:
             return results
 
@@ -55,12 +57,20 @@ class SQLInjectionScanner(Scanner):
             for row in reader:
                 uri = urlparse(row['Target URL'])
                 domain = uri.netloc
+
                 if uri.port:
                     domain = domain[:domain.rfind(':')]
+
+                if domain not in domains:
+                    domains.add(domain)
+                    idx = 0
+
                 logfile = open('sqlmap/output/' + domain + '/log', 'r')
                 log = logfile.read()
                 logfile.close()
+
                 domain = uri.scheme + '://' + domain
+
                 if row['Place']:
                     entry = {}
                     entry['endpoint'] = uri.path
