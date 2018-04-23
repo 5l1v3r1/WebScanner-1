@@ -43,7 +43,7 @@ scanners = {
 }
 for className in scanners:
     scanner = scanners[className]
-    print '## Scanning for', scanner.className, 'vulnerabilities...'
+    print '\n## Scanning for', scanner.className, 'vulnerabilities...'
     stdout.flush()
 
     vulnerabilities = scanner.scanVulnerabilities()

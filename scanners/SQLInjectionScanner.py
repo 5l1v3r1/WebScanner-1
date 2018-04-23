@@ -17,9 +17,10 @@ class SQLInjectionScanner(Scanner):
         super(SQLInjectionScanner, self).__init__(*args, **kwargs)
         OLDPWD = os.getcwd()
         os.chdir(__package__)
-        if not os.path.exists('sqlmap'):
+        if not glob('sqlmap/sqlmapproject-sqlmap-*'):
             urlretrieve('https://github.com/sqlmapproject/sqlmap/zipball/master', 'sqlmap.zip')
-            os.mkdir('sqlmap')
+            if not os.path.exists('sqlmap'):
+                os.mkdir('sqlmap')
             with ZipFile('sqlmap.zip','r') as zip_ref:
                 zip_ref.extractall("sqlmap")
             os.remove('sqlmap.zip')
