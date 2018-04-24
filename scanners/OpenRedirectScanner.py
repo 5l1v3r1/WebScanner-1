@@ -31,6 +31,12 @@ class OpenRedirectScanner(Scanner):
         # For Each Target..
         for target in self.targets:
             self.logger.info('[OPEN REDIRECT] Scanning %s ...', target['action'])
+            
+            cookieString = {}
+            
+            # Check presence of cookie Key in line
+            if 'cookies' in target.keys():
+                cookieString = target['cookies']
 
             # Set Method
             method = target['method']
@@ -79,13 +85,13 @@ class OpenRedirectScanner(Scanner):
             for payload in payloads:
                 self.logger.info('[OPEN REDIRECT] Trying with payload: %s ...', payload)
                 KVParams = self._constructKVPair(payload, paramsArray)
-                isSuccess = self._sendPayload(target['action'], KVParams, method, "", True)
+                isSuccess = self._sendPayload(target['action'], KVParams, method, cookieString, True)
                 # Check Payload Succeeds or Not
                 if isSuccess:
                     self.logger.info('[OPEN REDIRECT] .... Success.')
                     # Generate Result List
                     noResult = False
-                    self._generateResult(target['action'], KVParams, method)
+                    self._generateResult(target['action'], KVParams, method, cookieString)
                     self.logger.info('[OPEN REDIRECT] Vulnerability found for %s', target['action'])
                     break # Exit For Loop. Mission is Done.
                 else:
@@ -97,11 +103,15 @@ class OpenRedirectScanner(Scanner):
         return self.results
 
 
-    def _generateResult(self, target, KVParams, method):
+    def _generateResult(self, target, KVParams, method, cookieString):
 
         parsed_uri = urlparse(target)
         domain = '{uri.scheme}://{uri.netloc}'.format(uri=parsed_uri)
         path = '{uri.path}'.format(uri=parsed_uri)
+        
+        # if cookie file needed, append note beside endpoint (temp soln)        
+        if bool(cookieString):
+            path += ' (cookie required)'
 
         if domain not in self.results['results']:
             self.results['results'][domain] = [{
@@ -116,12 +126,14 @@ class OpenRedirectScanner(Scanner):
                 'method' : method
             })
 
-    def _sendPayload(self, target, KVParams, method, cookies, performDoubleCheck):
+    def _sendPayload(self, target, KVParams, method, cookie, performDoubleCheck):
         try:
             if method == "GET":
-                response = requests.get(target, params=KVParams, timeout=10)
+                # response = requests.get(target, params=KVParams, timeout=10)
+                response = requests.get(target, params=KVParams, timeout=10, cookies=cookie)
             else: # Sending as POST
-                response = requests.post(target, data=KVParams, timeout=10)
+                # response = requests.post(target, data=KVParams, timeout=10)
+                response = requests.post(target, data=KVParams, timeout=10, cookies=cookie)
 
             try:
                 if response.history:
@@ -132,7 +144,7 @@ class OpenRedirectScanner(Scanner):
                     if response.status_code == 200 and response.url == 'https://status.github.com/messages':
                         # Re-run with same payload again if performDoubleCheck is true
                         if performDoubleCheck:
-                            doubleCheckSuccess = self._sendPayload(target, KVParams, method, cookies, False)
+                            doubleCheckSuccess = self._sendPayload(target, KVParams, method, cookie, False)
                             if not doubleCheckSuccess:
                                 return False
                         return True
