@@ -50,6 +50,7 @@ class SQLInjectionScanner(Scanner):
         domains = set()
 
         if not result_files:
+            os.chdir(OLDPWD)
             return results
 
         with open(result_files[0]) as csvfile:
