@@ -51,13 +51,11 @@ class MainSpider(scrapy.Spider):
                     inputs=inputs, cookies=cookies)
             # Crawl submitted form
             self.logger.debug("(parse) crawl %s form to %s" % (method, action))
-            request = scrapy.http.FormRequest.from_response(response, formnumber=i)
-            request.meta['dont_redirect'] = True
-            yield request
-            request = scrapy.http.FormRequest.from_response(response, formnumber=i,
-                    formdata={ inp['name']: '1' for inp in inputs })
-            request.meta['dont_redirect'] = True
-            yield request
+            yield scrapy.http.FormRequest.from_response(response, formnumber=i,
+                    meta={ 'dont_redirect': True })
+            yield scrapy.http.FormRequest.from_response(response, formnumber=i,
+                    formdata={ inp['name']: '1' for inp in inputs },
+                    meta={ 'dont_redirect': True })
 
         # Follow redirections after crawl
         if 299 < response.status < 399 and 'Location' in response.headers:
