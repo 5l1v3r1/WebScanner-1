@@ -7,6 +7,9 @@ class MainSpider(scrapy.Spider):
     start_urls = [url for url in settings.TARGETS.split('\n') if url]
     allowed_domains = [url.replace('http://', '').replace('https://', '').split('/')[0]
             for url in start_urls]
+    for domain in allowed_domains:
+        if domain.find(':') > -1:
+            allowed_domains.append(':'.join(domain.split(':')[:-1]))
 
     def __init__(self, *args, **kwargs):
         super(MainSpider, self).__init__(*args, **kwargs)
