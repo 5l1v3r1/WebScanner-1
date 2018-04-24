@@ -16,6 +16,9 @@ class MainSpider(scrapy.Spider):
     def parse(self, response):
         self.logger.debug("(parse) response: status=%d, URL=%s" % (
                 response.status, response.url))
+        cookies = response.headers.get('Set-Cookie')
+        cookies = dict((cookie.split('=') + [''])[:2]
+                for cookie in (cookies.split('; ') if cookies else []))
         # Crawl links
         for href in response.xpath('//a/@href'):
             self.logger.debug("(parse) a href to %s" % href.extract())
@@ -29,7 +32,8 @@ class MainSpider(scrapy.Spider):
             params = [param.split('=')[0] for param in split[-1].split('&')]
             self.logger.info("(parse) yield GET form at %s" % response.url)
             yield FormItem(action=''.join(split[:-1]), method='GET',
-                    inputs=[InputItem(name=p) for p in params if p])
+                    inputs=[InputItem(name=p) for p in params if p],
+                    cookies=cookies)
         else: params = []
 
         # Crawl forms
@@ -43,7 +47,8 @@ class MainSpider(scrapy.Spider):
                     and inp.xpath('@name').extract_first('') not in params]
             if not inputs: continue
             self.logger.info("(parse) yield %s form to %s" % (method, action))
-            yield FormItem(action=action.url, method=method, inputs=inputs)
+            yield FormItem(action=action.url, method=method,
+                    inputs=inputs, cookies=cookies)
             # Crawl submitted form
             self.logger.debug("(parse) crawl %s form to %s" % (method, action))
             request = scrapy.http.FormRequest.from_response(response, formnumber=i)

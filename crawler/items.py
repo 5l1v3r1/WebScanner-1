@@ -11,6 +11,7 @@ class FormItem(scrapy.Item):
     action = scrapy.Field()
     method = scrapy.Field()
     inputs = scrapy.Field()
+    cookies = scrapy.Field()
 
 class InputItem(scrapy.Item):
     name = scrapy.Field()
