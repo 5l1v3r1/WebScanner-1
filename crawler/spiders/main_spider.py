@@ -60,6 +60,12 @@ class MainSpider(scrapy.Spider):
                     formdata={ inp['name']: '1' for inp in inputs },
                     meta={ 'dont_redirect': True })
 
+        # Crawl URL-like texts
+        for url in response.css('body').re(r'"(/.*.php[^"]*)"|\'(/.*.php[^\']*)\''):
+            yield response.follow(url, callback=self.parse, meta={
+                    'dont_redirect': True,
+                    'handle_httpstatus_list': range(300, 309) })
+
         # Follow redirections after crawl
         if 299 < response.status < 399 and 'Location' in response.headers:
             self.logger.debug("(parse) redirecting to %s" % response.headers['Location'])
