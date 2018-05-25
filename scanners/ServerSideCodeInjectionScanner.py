@@ -6,9 +6,9 @@ class ServerSideCodeInjectionScanner(Scanner):
             'php://filter/convert.quoted-printable-encode/resource=flag.php',
             'php://filter/convert.quoted-printable-encode/resource=%s',
             'php://filter/convert.quoted-printable-encode/resource=%s.php',
-            'data://text/plain;base64,PD8gZWNobyI8P3BocCI7cGhwaW5mbygpO2RpZSgpOz8%2b']
+            'data://text/plain;base64,PD8gZWNobyI8P3BocD0wQSI7cGhwaW5mbygpO2RpZSgpOz8%2b']
     payloads.extend(payload + '%%0' for payload in payloads[:])
-    testSignature = fixedSignature = '<?php'
+    testSignature = fixedSignature = '<?php=0A'
 
     def loadPayload(self, payload, target):
         if payload.find('%s') > -1:
